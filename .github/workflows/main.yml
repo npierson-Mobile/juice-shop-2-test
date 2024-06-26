@@ -45,9 +45,7 @@ jobs:
     env: 
       WIZ_CLIENT_ID: ${{ secrets.WIZ_CLIENT_ID }}
       WIZ_CLIENT_SECRET: ${{ secrets.WIZ_CLIENT_SECRET }}
-      WIZ_IAC_POLICY: "nixlab-iac-audit"
-      WIZ_SECRETS_POLICY: "nixlab-secrets-audit"
-      WIZ_VULN_POLICY: "nixlab-vuln-audit"
+
     steps:
     - name: Checkout Source
       uses: actions/checkout@v4
@@ -59,7 +57,7 @@ jobs:
       run: ./wizcli auth --id "$WIZ_CLIENT_ID" --secret "$WIZ_CLIENT_SECRET"
 
     - name: Run Wiz CLI IaC Scan
-      run: ./wizcli iac scan --path "." -p "$WIZ_IAC_POLICY" -p "$WIZ_SECRETS_POLICY" --tag github_action_run_id=${{ github.run_id }} -o iac-scan-results.sarif,sarif,true
+      run: ./wizcli iac scan --path "."  --tag github_action_run_id=${{ github.run_id }} -o iac-scan-results.sarif,sarif,true
 
     - name: Upload SARIF file IaC
       uses: github/codeql-action/upload-sarif@v3
@@ -68,7 +66,7 @@ jobs:
         category: wiz-iac
 
     - name: Run Wiz CLI Directory Scan
-      run: ./wizcli dir scan --path "." -p "$WIZ_VULN_POLICY" -p "$WIZ_SECRETS_POLICY" --tag github_action_run_id=${{ github.run_id }} -o dir-scan-results.sarif,sarif,true
+      run: ./wizcli dir scan --path "."  --tag github_action_run_id=${{ github.run_id }} -o dir-scan-results.sarif,sarif,true
 
     - name: Upload SARIF file Dir
       uses: github/codeql-action/upload-sarif@v3
